@@ -32,9 +32,17 @@ def main() -> None:
     signing_secret = os.environ.get("B12_CHALLENGE")
     if not signing_secret:
         raise RuntimeError("Missing B12_CHALLENGE secret.")
+    signing_secret = signing_secret.strip()
+    if not signing_secret:
+        raise RuntimeError("B12_CHALLENGE secret is empty after trimming whitespace.")
 
     payload = _build_payload()
-    body = json.dumps(payload, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
+    body = json.dumps(
+        payload,
+        separators=(",", ":"),
+        sort_keys=True,
+        ensure_ascii=True,
+    ).encode("utf-8")
     digest = hmac.new(signing_secret.encode("utf-8"), body, hashlib.sha256).hexdigest()
 
     headers = {

@@ -1,0 +1,24 @@
+name: B12 Submission
+
+on:
+  workflow_dispatch:
+
+jobs:
+  submit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Send submission payload
+        env:
+          B12_CHALLENGE: ${{ secrets.B12_CHALLENGE }}
+        run: python scripts/submit_application.py
